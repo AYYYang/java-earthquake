@@ -37,6 +37,9 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	public static final float THRESHOLD_DEEP = 300;
 
 	// ADD constants for colors
+    public static final int[] yellow = {255, 255, 0};
+    public static final int[] blue = {0, 0, 255};
+    public static final int[] red = {255, 0, 0};
 
 	
 	// abstract method implemented in derived classes
@@ -80,7 +83,13 @@ public abstract class EarthquakeMarker extends SimplePointMarker
 	// But this is up to you, of course.
 	// You might find the getters below helpful.
 	private void colorDetermine(PGraphics pg) {
-		//TODO: Implement this method
+		if (getDepth() <= THRESHOLD_LIGHT) {
+			pg.fill(yellow[0], yellow[1], yellow[2]);
+		} else if (getDepth() >= THRESHOLD_DEEP) {
+			pg.fill(red[0], red[1], red[2]);
+		} else {
+			pg.fill(blue[0], blue[1], blue[2]);
+		}
 	}
 	
 	
