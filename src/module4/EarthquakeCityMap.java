@@ -1,6 +1,7 @@
 package module4;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
@@ -168,11 +169,9 @@ public class EarthquakeCityMap extends PApplet {
 		// country in m.  Notice that isInCountry takes a PointFeature
 		// and a Marker as input.  
 		// If isInCountry ever returns true, isLand should return true.
-		for (Marker m : countryMarkers) {
-			// TODO: Finish this method using the helper method isInCountry
-			
+		for (Marker m : countryMarkers) { 
+			if (isInCountry(earthquake, m)) return true;
 		}
-		
 		
 		// not inside any country
 		return false;
@@ -186,34 +185,30 @@ public class EarthquakeCityMap extends PApplet {
 	 * */
 	private void printQuakes() 
 	{
-		// TODO: Implement this method
-		// One (inefficient but correct) approach is to:
-		//   Loop over all of the countries, e.g. using 
-		//        for (Marker cm : countryMarkers) { ... }
-		//        
-		//      Inside the loop, first initialize a quake counter.
-		//      Then loop through all of the earthquake
-		//      markers and check to see whether (1) that marker is on land
-		//     	and (2) if it is on land, that its country property matches 
-		//      the name property of the country marker.   If so, increment
-		//      the country's counter.
-		
-		// Here is some code you will find useful:
-		// 
-		//  * To get the name of a country from a country marker in variable cm, use:
-		//     String name = (String)cm.getProperty("name");
-		//  * If you have a reference to a Marker m, but you know the underlying object
-		//    is an EarthquakeMarker, you can cast it:
-		//       EarthquakeMarker em = (EarthquakeMarker)m;
-		//    Then em can access the methods of the EarthquakeMarker class 
-		//       (e.g. isOnLand)
-		//  * If you know your Marker, m, is a LandQuakeMarker, then it has a "country" 
-		//      property set.  You can get the country with:
-		//        String country = (String)m.getProperty("country");
-		
-		
+		HashMap<String, Integer> countryQuakesMap = new HashMap<String, Integer>();
+		int numOceanQuakes = 0;
+
+		for(Marker marker: quakeMarkers) {
+			if ( ((EarthquakeMarker) marker).isOnLand() ) {
+				// on land
+				String country = (String)marker.getProperty("country");
+				
+				if (countryQuakesMap.containsKey(country)) {
+					countryQuakesMap.put(country, countryQuakesMap.get(country) + 1);
+				} else {
+					countryQuakesMap.put(country, 1);
+				}
+			} else {
+				// in ocean
+				numOceanQuakes+=1;
+			}
+		}
+
+		countryQuakesMap.entrySet().forEach(entry -> {
+		    System.out.println(entry.getKey() + ": " + entry.getValue());
+		});
+		System.out.println("OCEAN QUAKES: " + numOceanQuakes);	
 	}
-	
 	
 	
 	// helper method to test whether a given earthquake is in a given country
